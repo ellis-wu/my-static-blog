@@ -1,0 +1,221 @@
+#sidebar
+    @media mq-normal
+        column(sidebar-column)
+    @media mq-tablet
+        column(sidebar-column-tablet)
+
+.toc-article
+    padding 10px 5px
+    line-height 1.6em
+    margin 2em 0 0 0.2em
+.toc-title
+    font-size 120%
+    font-weight 700
+    padding 0.3em 1
+    &:before
+        font-family: "FontAwesome"
+        content: "\f02e"
+        margin-right .5em
+
+@media screen and (max-width: 1100px)
+    #toc
+        display: none
+
+#toc
+    @media mq-mobile
+        display: none
+    @media mq-tablet
+        display: none
+    .toc
+        margin: block-margin 20px
+        padding 0
+        margin 0.5em 1.5em
+        li
+            list-style none
+    .toc-child
+        list-style none
+        padding-left 1.0em
+.toc-fixed
+    margin 0 0 0 0.2em
+    position fixed
+    top 0px
+    overflow hidden
+    z-index 1
+
+
+.widget
+    @extend $base-style
+    line-height: line-height
+    word-wrap: break-word
+    font-size: 0.9em
+    ul, ol
+        list-style: none
+        margin: 0
+        ul, ol
+            margin: 0 20px
+        ul
+            list-style: disc
+        ol
+            list-style: decimal
+
+.category-list-count
+.tag-list-count
+.archive-list-count
+    padding-left: 5px
+    color: color-grey
+    font-size: 0.85em
+    &:before
+        content: "("
+    &:after
+        content: ")"
+
+.tagcloud
+    a
+        margin-right: 5px
+
+.widget-wrap
+    margin: block-margin 10px
+    @media mq-mini
+        margin: block-margin 20px
+
+.widget-title
+    @extend $block-caption
+    margin-bottom: 0
+
+.widget
+    padding: 15px 5px
+    a
+        color: color-sidebar-text
+        text-decoration: none
+        &:hover
+            color: color-sidebar-text-dark
+    ul, ol, dl
+        ul, ol, dl
+            margin-left: 15px
+            list-style: disc
+    ul, ol
+        list-style: none
+        li,
+        .category-list-child
+            padding: 10px 0
+            font-size: font-size
+            border-bottom: 1px solid border-color
+            a
+                color: color-sidebar-text
+        ul, ol
+            list-style: none
+            li
+                border: none
+                &:last-child
+                    padding-bottom: 0px
+    ul:not(#recent-post), ol:not(#recent-post)
+        li
+            a
+                &:before
+                    color: #ccc
+                    content: "\f0da"
+                    font-size: 12px
+                    margin-right: 6px
+                    font-family: FontAwesome
+                    transition: 0.2s ease
+                &:hover:before
+                    color: color-sidebar-text-dark
+
+#toTop
+    position: fixed
+    right: 30px
+    bottom: 30px
+    display: block
+    visibility: hidden
+    width: 42px
+    height: 43px
+    background: url(images/ironman.png) no-repeat 50% 0
+    opacity: 0
+    -webkit-transition: visibility 0.6s cubic-bezier(0.6, 0.04, 0.98, 0.335), opacity 0.6s cubic-bezier(0.6, 0.04, 0.98, 0.335), -webkit-transform 0.6s cubic-bezier(0.6, 0.04, 0.98, 0.335)
+    -moz-transition: visibility 0.6s cubic-bezier(0.6, 0.04, 0.98, 0.335), opacity 0.6s cubic-bezier(0.6, 0.04, 0.98, 0.335), -moz-transform 0.6s cubic-bezier(0.6, 0.04, 0.98, 0.335)
+    transition: visibility 0.6s cubic-bezier(0.6, 0.04, 0.98, 0.335), opacity 0.6s cubic-bezier(0.6, 0.04, 0.98, 0.335), transform 0.6s cubic-bezier(0.6, 0.04, 0.98, 0.335)
+    @media mq-mobile
+        right: 12px
+        bottom: 20px
+    @media mq-mini
+        width: 12px
+        height: 20px
+
+
+#toTop:hover {
+    background-position: 50% -44px
+}
+
+
+#toTop.show {
+    visibility: visible
+    opacity: 1
+}
+
+
+#toTop.launch {
+    background-position: 50% -44px
+    opacity: 0
+    -webkit-transform: translateY(-500px)
+    -moz-transform: translateY(-500px)
+    -ms-transform: translateY(-500px)
+    transform: translateY(-500px)
+    pointer-events: none
+}
+
+
+#recent-post
+    li
+        clearfix()
+        padding: 10px 0 10px 94px
+    &.no-thumbnail
+        li
+            padding: 10px 0px
+    li
+        .item-thumbnail
+            opacity: 1
+            float: left
+            margin-left: -94px
+            transition: all 0.2s ease
+            .thumbnail
+                width: 80px
+                height: 80px
+                display: block
+                position: relative
+                overflow: hidden
+                span
+                    width: 100%
+                    height: 100%
+                    display: block
+                .thumbnail-image
+                    position: absolute
+                    background-size: cover
+                    background-position: center
+                .thumbnail-none
+                    background-image: url(thumbnail-default-small)
+                    background-size: 100% 100%
+        .item-inner
+            a
+            .item-category
+                font-size: 13px
+                text-transform: uppercase
+                a
+                    color: color-link
+                    &:hover
+                        color: color-sidebar-text-dark
+                a, .fa
+                    margin-right: 5px
+            .item-title
+                font-size: 15px
+                a
+                    color: color-sidebar-text-dark
+                    transition: all 0.2s ease
+            .item-date
+                color: #aaa
+                font-size: 13px
+                text-transform: uppercase
+        &:hover
+            .item-thumbnail
+                opacity: 0.8
+            .item-title a
+                color: color-link

@@ -1,0 +1,6 @@
+<% if (post.toc) { %>
+    <div id="toc" class="toc-article">
+        <strong class="toc-title"><%= __('article.catalogue') %></strong>
+            <%- toc(post.content, {max_depth: 3}) %>
+    </div>
+<% } %>

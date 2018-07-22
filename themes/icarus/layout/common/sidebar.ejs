@@ -1,0 +1,13 @@
+<% if (Array.isArray(theme.widgets) && theme.widgets.length > 0) { %>
+<aside id="sidebar">
+    <% if (is_post()) { %>
+        <%- partial('common/toc') %>
+    <% } %>
+    <% if (is_home()) { %>
+        <% theme.widgets.forEach(function(widget) { %>
+            <%- partial('widget/' + widget) %>
+        <% }) %>
+    <% } %>
+    <a id="toTop" href="#top" class=""></a>
+</aside>
+<% } %>
