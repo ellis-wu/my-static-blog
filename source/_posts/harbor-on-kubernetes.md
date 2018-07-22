@@ -67,7 +67,7 @@ service/default-http-backend   ClusterIP   10.105.57.243   <none>        80/TCP 
 service/ingress-nginx          NodePort    10.108.5.125    <none>        80:31940/TCP,443:31164/TCP   2m
 ```
 
-這邊可以看到 ingress-nginx 透過`NodePort`將 Service expose 出來。若應用程式是 HTTP 則為 31940；若為 HTTPS 則為 31164。
+這邊可以看到 ingress-nginx 透過`NodePort`將 Service expose 出來。若應用程式為 HTTP 協定則由 31940 port 將應用程式 expose；若為 HTTPS 協定則由 31164 port 將應用程式 expose。
 
 ## 安裝 Kubernetes Helm
 因為要使用 Helm 來部署 Harbor，所以我們需要先安裝 Helm。而 Helm 的安裝方式有很多，這邊使用 binary 的方式進行安裝：
