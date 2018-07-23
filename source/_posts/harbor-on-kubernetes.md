@@ -12,25 +12,25 @@ thumbnail: /images/harbor-on-kubernetes-images/harbor-on-kubernetes-logo.png
 banner: /images/harbor-on-kubernetes-images/harbor-on-kubernetes-logo.png
 toc: true
 ---
-在之前已經介紹過 {% post_link harbor-docker-registry Harbor %}，且是在實體機上的透過`docker-compose`簡單且快速的部署 Harbor。而本篇再介紹如何透過 Kubernetes Helm 來部署 Harbor。官方有提供直接以 YAML 來部署 Harbor 且 Harbor 版本為 v1.2，但後來官方不建議直接使用 YAML 來部署 Harbor，而是透過 Helm 來部署。因此本文將介紹如何用 Kubernetes Helm 來部署 Harbor 在 Kubernetes 上。
+在之前已經介紹過 {% post_link harbor-docker-registry Harbor %}，且是在實體機上的透過`docker-compose`簡單且快速的部署 Harbor。而本篇將介紹如何透過 Kubernetes Helm 來部署 Harbor。而官方在早期有提供 YAML 來直接部署 Harbor 在 Kubernetes 之上，且 Harbor 的版本為 v1.2。但後來官方不建議直接使用 YAML 來部署 Harbor，而是透過 Helm 來部署。因此本文將介紹如何用 Kubernetes Helm 來部署 Harbor 在 Kubernetes 上。
 
 <!--more-->
 
 ## 事前準備
-目前 Harbor 透過 Helm 部署在 Kubernetes 上有些限制與需求，請確認以下需求：
+目前 Harbor 官方透過 Helm 部署在 Kubernetes 上有些限制與需求，請確認以下需求：
   * Kubernetes cluster 1.8+ with Beta APIs enabled
   * Kubernetes Ingress Controller is enabled
   * kubectl CLI 1.8+
   * Helm CLI 2.8.0+
 
-而本文事先準備了一個 Kubernetes 叢集，且是利用`kubeadm`所部署而成；環境並非實體機而為虛擬機機。再準備一台機器安裝 NFS Server。
+而本文事先準備了一個 Kubernetes 叢集，且是利用`kubeadm`所部署而成；環境並非實體機而為虛擬機機。再準備一台機器並安裝 NFS Server，此 NFS Server 將儲存 Harbor 一些資訊以及 Docker Images 的儲存。
 
-| IP Address   | Role       | CPU    | RAM    | Disk  |
-| ------------ | ---------- | ------ | ------ | ----- |
-| 172.20.3.57  | Master1    | 2 vCPU | 2 GB   | 40 GB |
-| 172.20.3.50  | Node1      | 2 vCPU | 2 GB   | 40 GB |
-| 172.20.3.55  | Node2      | 2 vCPU | 2 GB   | 40 GB |
-| 172.16.35.50 | NFS Server | 1 vCPU | 2 GB   | 40 GB |
+| IP Address   | Role       | CPU    | RAM    | Disk   |
+| ------------ | ---------- | ------ | ------ | ------ |
+| 172.20.3.57  | Master1    | 2 vCPU | 2 GB   | 40 GB  |
+| 172.20.3.50  | Node1      | 2 vCPU | 2 GB   | 40 GB  |
+| 172.20.3.55  | Node2      | 2 vCPU | 2 GB   | 40 GB  |
+| 172.16.35.50 | NFS Server | 1 vCPU | 2 GB   | 200 GB |
 
 * 作業系統皆為 Ubuntu 16.04；
 * Docker 版本為 1.18.03；
@@ -52,7 +52,8 @@ $ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/ma
 ```
 
 {% colorquote info %}
-其他平台要啟用 ingress-nginx 或者將 Ingress 服務 expose，請參考 [這裡](https://github.com/kubernetes/ingress-nginx/blob/master/docs/deploy/index.md#provider-specific-steps)
+* 其他平台要啟用 ingress-nginx 或者將 Ingress 服務 expose，請參考 [這裡](https://github.com/kubernetes/ingress-nginx/blob/master/docs/deploy/index.md#provider-specific-steps)
+* Ingress 不一定要依照以上方法透過`NodePort`將服務 expose，可依照自己的需求替換。
 {% endcolorquote %}
 
 完成後，透過`kubectl`查看：
@@ -67,7 +68,7 @@ service/default-http-backend   ClusterIP   10.105.57.243   <none>        80/TCP 
 service/ingress-nginx          NodePort    10.108.5.125    <none>        80:31940/TCP,443:31164/TCP   2m
 ```
 
-這邊可以看到 ingress-nginx 透過`NodePort`將 Service expose 出來。若應用程式為 HTTP 協定則由 31940 port 將應用程式 expose；若為 HTTPS 協定則由 31164 port 將應用程式 expose。
+這邊可以看到 ingress-nginx 透過`NodePort`將服務 expose 出來。若應用程式為 HTTP 協定則由 31940 port 將應用程式 expose；若為 HTTPS 協定則由 31164 port 將應用程式 expose。
 
 ## 安裝 Kubernetes Helm
 因為要使用 Helm 來部署 Harbor，所以我們需要先安裝 Helm。而 Helm 的安裝方式有很多，這邊使用 binary 的方式進行安裝：
@@ -130,9 +131,9 @@ done
 以上步驟若有其他後端儲存系統，請依照自己的需求替換。
 {% endcolorquote %}
 
-再來使用`kubectl`指令確認 Persistent Volume 是否建立起來：
+再來，使用`kubectl`指令確認 Persistent Volume 是否建立起來：
 ```shell
-kubectl get pv
+$ kubectl get pv
 NAME      CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM     STORAGECLASS   REASON    AGE
 pv001     50Gi       RWO            Recycle          Available                                      3s
 pv002     50Gi       RWO            Recycle          Available                                      3s
