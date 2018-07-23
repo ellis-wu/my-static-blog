@@ -98,7 +98,14 @@ service/tiller-deploy   ClusterIP   10.106.146.158   <none>        44134/TCP   3
 ```
 
 ## 使用 Helm 部署 Harbor
-在使用 Helm 部署 Harbor 之前，我們需要先準備三個 Persistent Volumes 提供給 Harbor 的服務。而這邊使用 nfs 來提供三個 Persistent Volumes：
+在使用 Helm 部署 Harbor 之前，我們需要先準備三個 Persistent Volumes 提供給 Harbor 的服務。而這邊使用 NFS 來提供三個 Persistent Volumes。
+
+先到 NFS Server 上建立三個資料夾：
+```shell
+$ mkdir -p /var/nfsshare/nfs{1..3}
+```
+
+接著回到 Kubernetes Master 上，透過以下指令來建立三個 Persistent Volume：
 ```shell
 $ for i in {1..3}; do
 cat << EOF | kubectl create -f -
@@ -119,7 +126,11 @@ EOF
 done
 ```
 
-使用`kubectl`指令確認 Persistent Volume 是否建立起來：
+{% colorquote info %}
+以上步驟若有其他後端儲存系統，請依照自己的需求替換。
+{% endcolorquote %}
+
+再來使用`kubectl`指令確認 Persistent Volume 是否建立起來：
 ```shell
 kubectl get pv
 NAME      CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM     STORAGECLASS   REASON    AGE
@@ -186,14 +197,14 @@ my-harbor-redis-master-0                          1/1       Running   0         
 {% endcolorquote %}
 
 ## 開始使用 Harbor
-確認 Helm 部署的 Harbor 沒問題後，可以開始使用 Harbor。以下將說明如何讓 Docker Client 如何存取私有的 Registry 以及一些基本的操作。
+確認 Helm 部署的 Harbor 沒問題後，可以開始使用 Harbor。以下將說明如何讓 Docker Client 如何存取私有的 Registry 以及一些基本操作。
 
 ### 設定 Docker 存取私有 Registry
-首先，要讓 Docker 能存取私有的 Registry 有兩種方式：
-  1. 使用自帶的憑證(CA)；
-  2. 設定 Insecure Registry。
+首先，要讓 Docker 能存取私有的 Registry 需要對 Docker 做一些小小的設定，而設定方式有以下兩種方式：
+  1. **使用自帶的憑證(CA)**：為了安全性考量，私有的 Registry 自帶憑證。當 Docker Client 與私有的 Registry 進行溝通時都需要使用此憑證，而這也是目前 Docker 官方推薦的做法；
+  2. **設定 Insecure Registry**：直接設定為 Insecure Registry，因為安全性的考量目前此方法官方並不推薦。
 
-而兩種方法選擇其中一中設定即可。
+而兩種方法選擇其中一種設定即可。
 
 #### 設定憑證(CA)
 因為我們部署的 Harbor 是有自帶憑證(CA)，所以需要再 Docker Client 加入憑證，這樣 Docker Client 才有辦法存取到私有的 Registry。
