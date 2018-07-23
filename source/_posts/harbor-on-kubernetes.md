@@ -52,7 +52,7 @@ $ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/ma
 ```
 
 {% colorquote info %}
-* 其他平台要啟用 ingress-nginx 或者將 Ingress 服務 expose，請參考 [這裡](https://github.com/kubernetes/ingress-nginx/blob/master/docs/deploy/index.md#provider-specific-steps)
+* 其他平台要啟用 ingress-nginx 或者將 Ingress 服務 expose，請參考 [這裡](https://github.com/kubernetes/ingress-nginx/blob/master/docs/deploy/index.md#provider-specific-steps)；
 * Ingress 不一定要依照以上方法透過`NodePort`將服務 expose，可依照自己的需求替換。
 {% endcolorquote %}
 
