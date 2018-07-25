@@ -16,6 +16,10 @@ toc: true
 
 <!--more-->
 
+{% colorquote danger %}
+目前 Harbor 部署在 Kubernetes v1.8+ 上，會遇到一些問題 ([#5295](https://github.com/vmware/harbor/issues/5295#issuecomment-404409532))。本文操作皆使用 Harbor Master Branch，但 Master Branch 為開發 Branch 可能某些步驟或設定會與實際情況稍微不同。因此，目前不適合在 Production 環境中使用，可能要等到 Harbor 釋出 1.6 後再來測試看看。
+{% endcolorquote %}
+
 ## 事前準備
 目前 Harbor 官方透過 Helm 部署在 Kubernetes 上有些限制與需求，請確認以下需求：
   * Kubernetes cluster 1.8+ with Beta APIs enabled
@@ -75,10 +79,6 @@ service/ingress-nginx          NodePort    10.108.5.125    <none>        80:3194
 ```shell
 $ wget -qO- https://kubernetes-helm.storage.googleapis.com/helm-v2.9.1-linux-amd64.tar.gz | tar -zx
 $ mv linux-amd64/helm /usr/local/bin
-
-$ helm version
-Client: &version.Version{SemVer:"v2.9.1", GitCommit:"20adb27c7c5868466912eebdf6664e7390ebe710", GitTreeState:"clean"}
-Server: &version.Version{SemVer:"v2.9.1", GitCommit:"20adb27c7c5868466912eebdf6664e7390ebe710", GitTreeState:"clean"}
 ```
 
 接著為 Helm 設定 RBAC 並初始化 Helm：
@@ -99,17 +99,17 @@ service/tiller-deploy   ClusterIP   10.106.146.158   <none>        44134/TCP   3
 ```
 
 ## 使用 Helm 部署 Harbor
-在使用 Helm 部署 Harbor 之前，我們需要先準備三個 Persistent Volumes 提供給 Harbor 的服務。而這邊使用 NFS 來提供三個 Persistent Volumes。
+在使用 Helm 部署 Harbor 之前，我們需要先準備四個 Persistent Volumes 提供給 Harbor 的服務。而這邊使用 NFS 來提供四個 Persistent Volumes。
 
-先到 NFS Server 上建立三個資料夾：
+先到 NFS Server 上建立四個資料夾：
 ```shell
-$ mkdir -p /var/nfsshare/nfs{1..3}
+$ mkdir -p /var/nfsshare/nfs{1..4}
 ```
 
-接著回到 Kubernetes Master 上，透過以下指令來建立三個 Persistent Volume：
+接著回到 Kubernetes Master 上，透過以下指令來建立四個 Persistent Volume：
 ```shell
-$ for i in {1..3}; do
-cat << EOF | kubectl create -f -
+$ for i in {1..4}; do
+cat <<EOF | kubectl create -f -
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -138,12 +138,14 @@ NAME      CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM     STORA
 pv001     50Gi       RWO            Recycle          Available                                      3s
 pv002     50Gi       RWO            Recycle          Available                                      3s
 pv003     50Gi       RWO            Recycle          Available                                      2s
+pv004     50Gi       RWO            Recycle          Available                                      2s
 ```
 
-當 Persistent Volume 準備完成後，透過 Git 取得 Harbor Helm Chart：
+當 Persistent Volume 準備完成後，透過 Git 取得 [Harbor](https://github.com/vmware/harbor) 官方提供的 Helm Chart ：
 ```shell
 $ git clone https://github.com/vmware/harbor.git
 $ cd harbor/contrib/helm/harbor/
+$ helm dependency update
 ```
 
 在預設的情況下，Helm 部署的 Harbor 會是走 HTTPS 協定。因此需要修改`values.yaml`中的`externalPort`，將`externalPort`設定為 ingress-nginx HTTPS Port：
@@ -171,15 +173,16 @@ For more details, please visit https://github.com/vmware/harbor.
 ```shell
 $ kubectl get po
 NAME                                              READY     STATUS    RESTARTS   AGE
-my-harbor-harbor-adminserver-0                    1/1       Running   0          21m
-my-harbor-harbor-clair-5f7547dc95-fm9gb           1/1       Running   1          21m
-my-harbor-harbor-database-0                       1/1       Running   0          21m
-my-harbor-harbor-jobservice-6764bf89b6-dmp8c      1/1       Running   0          21m
-my-harbor-harbor-notary-server-64fcd84cf5-ztzmd   1/1       Running   0          21m
-my-harbor-harbor-notary-signer-7d6c45fc8f-wvp86   1/1       Running   0          21m
-my-harbor-harbor-registry-0                       1/1       Running   0          21m
-my-harbor-harbor-ui-848d95d674-lgv9d              1/1       Running   1          21m
-my-harbor-redis-master-0                          1/1       Running   0          21m
+my-harbor-harbor-adminserver-0                    1/1       Running   1          7m
+my-harbor-harbor-clair-5f7547dc95-mwkjg           1/1       Running   1          7m
+my-harbor-harbor-database-0                       1/1       Running   0          7m
+my-harbor-harbor-jobservice-6764bf89b6-b898c      1/1       Running   1          7m
+my-harbor-harbor-notary-server-64fcd84cf5-79sfj   1/1       Running   0          7m
+my-harbor-harbor-notary-signer-7d6c45fc8f-54xnf   1/1       Running   0          7m
+my-harbor-harbor-registry-0                       1/1       Running   0          7m
+my-harbor-harbor-ui-848d95d674-rq9hv              1/1       Running   2          7m
+my-harbor-postgresql-558fc8ddd6-4rl69             1/1       Running   0          7m
+my-harbor-redis-master-0                          1/1       Running   0          7m
 ```
 
 若部署完成後，將`harbor.my.domain`加入至`/etc/hosts`：
