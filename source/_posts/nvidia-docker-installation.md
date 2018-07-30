@@ -37,94 +37,20 @@ toc: true
 ## 事情準備
 安裝前需要確認以下幾點：
   * GNU/Linux x86_64 with kernel version > 3.10
-  * Docker CE or EE == v17.12
+  * Docker >= 1.12
   * NVIDIA GPU with Architecture > Fermi (2.1)
   * [NVIDIA drivers](http://www.nvidia.com/object/unix.html) ~= 361.93 (untested on older versions)
 
-## 安裝 Docker CE v17.12
-首先，須在環境中安裝`Docker`。若使用提供的腳本快速安裝的話，安裝的`Docker`版本為`18.02`，而目前`nvidia-docker2`貌似還不支援。因此透過以下方式安裝`Docker`並指定版本為`17.12`：
-```shell
-$ sudo -i
-$ apt-get install \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    software-properties-common
-```
+{% colorquote warning %}
+Docker 版本要安裝 stable release 的版本，請參考 [這裡](https://docs.docker.com/release-notes/docker-ce/)。
+{% endcolorquote %}
 
-新增`Docker`的 GPG 金鑰(key)：
-```shell
-$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-```
+## 安裝 Docker CE
+首先，需要在環境中安裝`Docker CE`，若使用 Docker 官方提供的快速安裝腳本的話，安裝的`Docker CE`版本並非 stable 的版本。所以 nvidia-docker 可能並未支援。因此，若要安裝 stable 的 Docker CE 請參考 {% post_link docker-installation Docker CE 安裝 %}，這裡不再詳述如何安裝 `Docker CE`。
 
-確認金鑰(key)，且驗證金鑰為`9DC8 5822 9FC7 DD38 854A E2D8 8D81 803C 0EBF CD88`：
-```shell
-$ apt-key fingerprint 0EBFCD88
-pub   4096R/0EBFCD88 2017-02-22
-      Key fingerprint = 9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88
-uid                  Docker Release (CE deb) <docker@docker.com>
-sub   4096R/F273FCD8 2017-02-22
-```
-
-設定 apt repository：
-```shell
-$ add-apt-repository \
-    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-    $(lsb_release -cs) \
-    stable"
-```
-
-更新 apt package：
-```shell
-$ apt-get update
-```
-
-使用以下指令列出`docker-ce`可以使用的版本：
-```shell
-$ apt-cache madison docker-ce
- docker-ce | 18.03.1~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
- docker-ce | 18.03.0~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
- docker-ce | 17.12.1~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
- docker-ce | 17.12.0~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
- docker-ce | 17.09.1~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
- docker-ce | 17.09.0~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
- docker-ce | 17.06.2~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
- docker-ce | 17.06.1~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
- docker-ce | 17.06.0~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
- docker-ce | 17.03.2~ce-0~ubuntu-xenial | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
- docker-ce | 17.03.1~ce-0~ubuntu-xenial | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
- docker-ce | 17.03.0~ce-0~ubuntu-xenial | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
-```
-
-選擇其中一個版本並安裝：
-```shell
-$ apt-get install docker-ce=17.12.0~ce-0~ubuntu
-```
-
-安裝完成後，可以使用以下指令確認`Docker`版本：
-```shell
-$ docker version
-Client:
- Version:	17.12.0-ce
- API version:	1.35
- Go version:	go1.9.2
- Git commit:	c97c6d6
- Built:	Wed Dec 27 20:11:19 2017
- OS/Arch:	linux/amd64
-
-Server:
- Engine:
-  Version:	17.12.0-ce
-  API version:	1.35 (minimum version 1.12)
-  Go version:	go1.9.2
-  Git commit:	c97c6d6
-  Built:	Wed Dec 27 20:09:53 2017
-  OS/Arch:	linux/amd64
-  Experimental:	false
-```
 
 ## 安裝 nvidia-docker
-Docker CE v17.12 安裝完成後，接著可以開始安裝`nvidia-docker2`：
+Docker CE 安裝完成後，接著可以開始安裝`nvidia-docker2`：
 ```shell
 $ apt-get install nvidia-384
 $ docker volume ls -q -f driver=nvidia-docker | xargs -r -I{} -n1 docker ps -q -a -f volume={} | xargs -r docker rm -f

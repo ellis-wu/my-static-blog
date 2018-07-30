@@ -5,6 +5,7 @@ categories:
   - 技術
   - Kubernetes
 tag:
+  - Kubeless
   - Kubernetes
   - Serverless
 thumbnail: /images/kubeless-installation-images/kubeless-logo.png
