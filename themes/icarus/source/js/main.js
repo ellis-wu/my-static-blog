@@ -63,14 +63,10 @@
     // To Top
     if ($('#sidebar').length) {
         $(document).on('scroll', function () {
-            if ($(document).width() >= 800) {
-                if(($(this).scrollTop() > toTop) && ($(this).scrollTop() > 0)) {
-                    $('#toTop').addClass("show")
-                } else {
-                    $('#toTop').removeClass("show")
-                }
-            } else {
+            if(($(this).scrollTop() > toTop) && ($(this).scrollTop() > 0)) {
                 $('#toTop').addClass("show")
+            } else {
+                $('#toTop').removeClass("show")
             }
         })
     }
@@ -82,7 +78,7 @@
          }, 1000, function() {
             $('#toTop').removeClass("show launch")
          });
-         return false
+         return false;
     })
 
 })(jQuery);
