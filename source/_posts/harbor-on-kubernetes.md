@@ -239,7 +239,7 @@ aLutMQCtDsEH5VgLku4ir5FkCG8riyZCCqKZtbMmpJaJGJQqAiJ4+RPrdNY9eTMO
 取得憑證後，在每一台 Docker Client 加入以下憑證：
 ```shell
 $ mkdir /etc/docker/certs.d/harbor.my.domain:31164
-$ echo <<EOF > ca.crt
+$ cat <<EOF > /etc/docker/certs.d/harbor.my.domain:31164/ca.crt
 -----BEGIN CERTIFICATE-----
 MIIC5TCCAc2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAUMRIwEAYDVQQDEwloYXJi
 b3ItY2EwHhcNMTgwNzE4MDIwOTQzWhcNMjgwNzE1MDIwOTQzWjAUMRIwEAYDVQQD
