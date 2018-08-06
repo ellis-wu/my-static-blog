@@ -1,5 +1,5 @@
 ---
-title: 使用 Kustomize 管理 Kubernetes YAML
+title: 使用 Kustomize 管理 Kubernetes 配置檔
 date: 2018-07-26
 categories:
   - 技術
@@ -10,11 +10,11 @@ thumbnail: /images/kustomize-introduction-images/kustomize-logo.png
 banner: /images/kustomize-introduction-images/kustomize-logo.png
 toc: true
 ---
-Kustomize 是 [SIG-CLI](https://github.com/kubernetes/community/tree/master/sig-cli) 的一個子項目，其目的是為 Kubernetes 提供一種可以重複使用配置檔的管理工具。舉例來說，我們今天開發了一個前端應用 v1 並且撰寫了一個 Deployment、Service 以及 ConfigMap YAML，之後透過`kubectl`指令將其部署在 Kubernetes 環境之中。但之後要將此前端應用升級為 v2，且其中有些參數與 v1 略有不同。此時，我們通常會將 v1 所撰寫的 YAML 複製一份並修改部分內容，在部署到 Kubernetes 環境之中。但這樣的情況下我們同時保存兩份 YAML 且其他人也無法輕易地看出兩份 YAML 之間的配置有哪些不同。而 Kustomize 就可以很好的幫我們解決這些問題。
+Kustomize 是 [SIG-CLI](https://github.com/kubernetes/community/tree/master/sig-cli) 的一個子項目，其目的是為 Kubernetes 提供一種可以重複使用配置檔的管理工具。舉例來說，我們今天開發了一個前端應用 v1 並且撰寫了一個 Deployment、Service 以及 ConfigMap 的 YAML，接著透過`kubectl`指令將其部署在 Kubernetes 環境之中。但之後此前端應用經過開發與升級至 v2 並需要將其部署至 Kubernetes 環境，但其中 Kubernetes 的配置檔有些參數與 v1 略有不同。此時，我們通常會將 v1 所撰寫的 YAML 複製一份並修改部分內容，再透過`kubectl`部署到 Kubernetes 環境之中。但這樣的情況下我們同時保存兩份 YAML 且其他人也無法輕易地看出兩份 YAML 之間的配置有哪些不同。而 Kustomize 就可以很好的幫我們解決這些問題。
 
 <!--more-->
 
-本文將使用 Kustomize 官方提供的範例，帶著大家快速了解 Kustomize 的好處與便利性。
+因此，本文將使用 Kustomize 官方提供的範例，帶著大家快速了解 Kustomize 的好處與便利性。
 
 ## Kustomize 安裝
 首先，Kustomize 的安裝十分簡單，我們這邊使用官方提供的 binary 檔案進行安裝。而根據作業系統的不同 Kustomize 提供三種 binary 檔 (`linux`、`darwin` 以及 `windows`)，請使用者依照自己的作業系統自行將下面的`opsys`參數更換：
@@ -282,14 +282,14 @@ configmap/staging-the-map      2         8m
 configmap/the-map              2         13m
 ```
 
-因為 Production 我們與 Base 之間我們只改變 Deployment 的數量，所以可以看到 Production 的 po 為更改的五個。
+因為 Production 與 Base 之間我們只改變 Deployment 的 replicas 數量，所以可以透過`kubectl`指令看到 Production 的 pod 數量為五個。
 
 {% colorquote info %}
 以上為官方提供的其中一個 Example，而其他 Example 請參考 [這裡](https://github.com/kubernetes-sigs/kustomize/tree/master/examples)。
 {% endcolorquote %}
 
 ## 結論
-使用 Kustomize 來作為 Kubernetes 配置檔的管理看起來不錯，但對使用者來說又要額外學習如何使用 Kustomize。但其帶來的好處在於，可以快速知道 Staging 與 Production 兩個版本上做了哪些修改，管理上帶來極大的好處。而目前 Kustomize 為 SIG 的子專案，未來的發展與後續維運方面還是個未知數，但它並不依賴於 Kubernetes 所以問題並不大。
+使用 Kustomize 來作為 Kubernetes 配置檔的管理看起來不錯，但對使用者來說又要額外學習如何使用 Kustomize。但其帶來的好處在於，可以快速知道 Staging 與 Production 兩個版本上做了哪些修改，管理上帶來極大的好處。而目前 Kustomize 為 SIG 的子專案，未來的發展與後續維運方面還是個未知數，但它並不依賴於 Kubernetes 所以還是可以嘗試看看。
 
 ## 參考資料
   1. [Kustomize Github](https://github.com/kubernetes-sigs/kustomize)

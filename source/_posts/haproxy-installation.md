@@ -74,5 +74,12 @@ listen stats
 HAProxy 提供網頁儀表板；可以透果此網頁儀表板查看整個負載平衡群組之狀況。因此，請將設定檔中的`<account>`與`<password>`更換為自己的帳號與密碼。
 {% endcolorquote %}
 
+設定完成後，重啟 HAProxy：
+```shell
+$ sudo service haproxy restart
+```
+
+完成後，可以透過瀏覽器存取 [HAProxy 儀表板](http://<your host>:8888)。
+
 ## 參考資料
   1. [富人用 L4 Switch，窮人用 Linux HAProxy！](https://blog.toright.com/posts/3967/%E5%AF%8C%E4%BA%BA%E7%94%A8-l4-switch%EF%BC%8C%E7%AA%AE%E4%BA%BA%E7%94%A8-linux-haproxy%EF%BC%81.html)
