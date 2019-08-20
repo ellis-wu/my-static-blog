@@ -19,7 +19,7 @@ customize:
         author: Ellis Wu
         author_title: 軟體工程師
         location: Taipei, Taiwan
-        follow: https://github.com/ppoffice/
+        follow: https://github.com/ellis-wu/
     highlight: monokai-sublime
     sidebar: right # sidebar position, options: left, right or leave it empty
     thumbnail: true # enable posts thumbnail, options: true, false

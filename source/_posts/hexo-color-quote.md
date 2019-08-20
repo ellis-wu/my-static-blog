@@ -223,6 +223,6 @@ $ echo "This is a Color Quote Example"
 {% endcolorquote %}
 
 ## 參考資料
- 1. [hexo-theme-minos](https://github.com/ppoffice/hexo-theme-minos)
- 2. [Hexo Tag](https://hexo.io/api/tag.html)
- 3. [hexo issues #2400](https://github.com/hexojs/hexo/issues/2400)
+  1. [hexo-theme-minos](https://github.com/ppoffice/hexo-theme-minos)
+  2. [Hexo Tag](https://hexo.io/api/tag.html)
+  3. [hexo issues #2400](https://github.com/hexojs/hexo/issues/2400)
